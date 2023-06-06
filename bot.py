@@ -27,7 +27,7 @@ def forward(msg: types.Message):
     bot.forward_message(ADMIN_ID, msg.chat.id, msg.message_id)
 
 
-@app.route()
+@app.route('/')
 def index():
     bot.set_webhook(WEBHOOK + '/' + TOKEN)
     return "Webhook sated to %s" % WEBHOOK
