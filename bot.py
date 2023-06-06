@@ -1,10 +1,9 @@
 import os
-from telebot import TeleBot, types, util, apihelper
+from telebot import TeleBot, types, util
 from telebot.custom_filters import IsReplyFilter, ChatFilter
 from flask import Flask, request
 
-ADMIN_ID = os.getenv("ADMIN_ID")
-apihelper.ENABLE_MIDDLEWARE = True
+ADMIN_ID = int(os.getenv("ADMIN_ID"))
 TOKEN = os.getenv("TOEKN")
 bot = TeleBot(TOKEN, parse_mode="markdown")
 app = Flask(__name__)
@@ -13,7 +12,7 @@ WEBHOOK = os.getenv("WEBHOOK")
 
 @bot.message_handler(commands=['start'], chat_types=['private'])
 def start_private(msg: types.Message):
-    bot.send_message(msg.chat.id, '**Hy there**\n__I am Natanim\'s bot. Please write me your message.')
+    bot.send_message(msg.chat.id, '**Hy {0} 👋**\n__I am Natanim bot.__\nPlease write me your message.'.format(msg.from_user.first_name))
 
 
 @bot.message_handler(is_reply=True, chat_id=[ADMIN_ID], content_types=util.content_type_media)
