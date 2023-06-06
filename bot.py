@@ -46,5 +46,7 @@ bot.add_custom_filter(IsReplyFilter())
 bot.add_custom_filter(ChatFilter())
 
 if __name__ == '__main__':
-    app.run()
+    #app.run()
+    bot.delete_webhook()
+    bot.infiity_polling()
     
