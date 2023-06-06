@@ -4,7 +4,7 @@ from telebot.custom_filters import IsReplyFilter, ChatFilter
 from flask import Flask, request
 
 ADMIN_ID = int(os.getenv("ADMIN_ID"))
-TOKEN = os.getenv("TOEKN")
+TOKEN = os.getenv("TOKEN")
 bot = TeleBot(TOKEN, parse_mode="markdown")
 app = Flask(__name__)
 WEBHOOK = os.getenv("WEBHOOK")
