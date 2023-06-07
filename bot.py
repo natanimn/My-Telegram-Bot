@@ -27,7 +27,8 @@ class DataBase:
             self.users.insert_one({'id': user_id, 'status': stat})
 
     async def banned(self, user_id):
-        return self.users.find_one({'id': user_id}).get('status') == 'banned'
+        find = self.users.find_one({'id': user_id})
+        return find is not None and find.get('status') == 'banned'
 
     async def ban(self, user_id):
         if user_id != ADMIN_ID:
