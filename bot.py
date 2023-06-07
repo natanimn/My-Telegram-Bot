@@ -100,7 +100,7 @@ async def banned_user(message: types.Message):
 
 
 @bot.message_handler(commands=['users'], chat_id=[ADMIN_ID])
-def users(message: types.Message):
+async def users(message: types.Message):
     count = db.users.count_documents({})
     await bot.reply_to(message, "ባሁኑ ሰዓት፤ የህ ቦት %d ተጠቃሚዎች አሉት።" % count)
 
