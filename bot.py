@@ -4,7 +4,7 @@ import pymongo
 from telebot.async_telebot import AsyncTeleBot, types, util
 from telebot.asyncio_handler_backends import BaseMiddleware
 from telebot.asyncio_filters import IsReplyFilter, ChatFilter
-ADMIN_ID = os.getenv("ADMIN_ID")
+ADMIN_ID = int(os.getenv("ADMIN_ID"))
 TOKEN = os.getenv("TOKEN")
 bot = AsyncTeleBot(TOKEN)
 
@@ -63,7 +63,7 @@ async def start_private(msg: types.Message):
     name = msg.from_user.first_name
     await db.save(msg.from_user.id)
     await bot.send_message(msg.chat.id, '👋 <b>Hello %s welcome my bot. </b>\n\n'
-                                        '<u>👇Write me your message here</u> (or send a media) and I will reply as soon '
+                                        '<i>⬇️Write me your message here</i> and I will reply as soon '
                                         'as possible.' % util.escape(name), "HTML")
 
 
