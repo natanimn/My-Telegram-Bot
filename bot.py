@@ -49,8 +49,12 @@ class Middleware(BaseMiddleware):
     @classmethod
     async def pre_process_message(cls, message: types.Message, data):
         user_id = message.from_user.id
-        if db.banned(user_id):
+        if await db.banned(user_id):
             message.content_type = 'banned'
+
+    @classmethod
+    async def post_process_message(self, message, data, exception):
+        pass
 
 
 @bot.message_handler(commands=['start'], chat_types=['private'])
