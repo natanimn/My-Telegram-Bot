@@ -75,14 +75,14 @@ async def ban_user(message: types.Message):
 async def reply(msg: types.Message):
     user_id = msg.reply_to_message.forward_from.id
     message_id = msg.reply_to_message.forward_from_message_id
-    if await db.banned(user_id):
-        return await bot.reply_to(msg, "❌ You have been banned from using this bot")
-
     await bot.copy_message(user_id, ADMIN_ID, msg.message_id, reply_to_message_id=message_id)
 
 
 @bot.message_handler(content_types=util.content_type_media)
 async def forward(msg: types.Message):
+    if await db.banned(msg.chat.id):
+        return await bot.reply_to(msg, "❌ You have been banned from using this bot")
+
     await bot.forward_message(ADMIN_ID, msg.chat.id, msg.message_id)
 
 
