@@ -42,22 +42,6 @@ class DataBase:
 db = DataBase()
 
 
-class Middleware(BaseMiddleware):
-    def __init__(self):
-        self.update_sensitive = True
-        self.update_types = ['message']
-
-    @classmethod
-    async def pre_process_message(cls, message: types.Message, data):
-        user_id = message.from_user.id
-        if await db.banned(user_id):
-            message.content_type = 'banned'
-
-    @classmethod
-    async def post_process_message(self, message, data, exception):
-        pass
-
-
 @bot.message_handler(commands=['start'], chat_types=['private'])
 async def start_private(msg: types.Message):
     name = msg.from_user.first_name
@@ -65,18 +49,6 @@ async def start_private(msg: types.Message):
     await bot.send_message(msg.chat.id, '👋 <b>Hello %s welcome my bot. </b>\n\n'
                                         '<i>⬇️Write me your message here</i> and I will reply as soon '
                                         'as possible.' % util.escape(name), "HTML")
-
-
-@bot.message_handler(is_reply=True, chat_id=[ADMIN_ID], content_types=util.content_type_media)
-async def reply(msg: types.Message):
-    user_id = msg.reply_to_message.forward_from.id
-    message_id = msg.reply_to_message.forward_from_message_id
-    await bot.copy_message(user_id, ADMIN_ID, msg.message_id, reply_to_message_id=message_id)
-
-
-@bot.message_handler(content_types=util.content_type_media)
-async def forward(msg: types.Message):
-    await bot.forward_message(ADMIN_ID, msg.chat.id, msg.message_id)
 
 
 @bot.message_handler(commands=['ban'], chat_id=[ADMIN_ID], is_reply=True)
@@ -99,9 +71,19 @@ async def ban_user(message: types.Message):
         await bot.reply_to(message, "❌ <b>ይህ ተጠቅሚ ቀድሞውንም አልታገደም!!</b>", parse_mode='HTML')
 
 
-@bot.message_handler(content_types=['banned'])
-async def banned_user(message: types.Message):
-    await bot.reply_to(message, "❌ You have been banned from using this bot")
+@bot.message_handler(is_reply=True, chat_id=[ADMIN_ID], content_types=util.content_type_media)
+async def reply(msg: types.Message):
+    user_id = msg.reply_to_message.forward_from.id
+    message_id = msg.reply_to_message.forward_from_message_id
+    if await db.banned(user_id):
+        return await bot.reply_to(msg, "❌ You have been banned from using this bot")
+
+    await bot.copy_message(user_id, ADMIN_ID, msg.message_id, reply_to_message_id=message_id)
+
+
+@bot.message_handler(content_types=util.content_type_media)
+async def forward(msg: types.Message):
+    await bot.forward_message(ADMIN_ID, msg.chat.id, msg.message_id)
 
 
 @bot.message_handler(commands=['users'], chat_id=[ADMIN_ID])
@@ -110,7 +92,6 @@ async def users(message: types.Message):
     await bot.reply_to(message, "ባሁኑ ሰዓት፤ የህ ቦት %d ተጠቃሚዎች አሉት።" % count)
 
 
-bot.setup_middleware(Middleware())
 bot.add_custom_filter(IsReplyFilter())
 bot.add_custom_filter(ChatFilter())
 
