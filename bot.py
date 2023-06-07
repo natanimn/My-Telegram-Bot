@@ -53,7 +53,7 @@ async def start_private(msg: types.Message):
 
 @bot.message_handler(commands=['ban'], chat_id=[ADMIN_ID], is_reply=True)
 async def ban_user(message: types.Message):
-    user_id = message.reply_to_message.from_user.id
+    user_id = message.reply_to_message.forward_from.id
     if user_id != ADMIN_ID:
         await db.ban(user_id)
         await bot.reply_to(message, "✅ <b>ይህ ተጠቃሚ ከቦቱ ታግዷል!!</b>", parse_mode="HTML")
@@ -62,8 +62,8 @@ async def ban_user(message: types.Message):
 
 
 @bot.message_handler(commands=['unban'], chat_id=[ADMIN_ID], is_reply=True)
-async def ban_user(message: types.Message):
-    user_id = message.reply_to_message.from_user.id
+async def unban_user(message: types.Message):
+    user_id = message.reply_to_message.forward_from.id
     if await db.banned(user_id):
         await db.unban(user_id)
         await bot.reply_to(message, "✅ <b>ይህ ተጠቃሚ እገዳዉ ተነስቷል!!</b>", parse_mode='HTML')
