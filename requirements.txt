@@ -1,3 +1,2 @@
-pytelegrambotapi
-pymongo
-aiohttp
+pyrogram
+tgcrypto
